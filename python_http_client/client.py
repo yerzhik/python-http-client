@@ -157,6 +157,7 @@ class Client(object):
                       request_headers=self.request_headers,
                       url_path=url_path,
                       append_slash=self.append_slash,
+                      proxies_without_auth_dict=self.proxies_dict_without_auth,
                       timeout=self.timeout)
 
     def _make_request(self, opener, request, timeout=None):
@@ -253,7 +254,7 @@ class Client(object):
                         data = json.dumps(request_body).encode('utf-8')
 
                 if self.proxies_dict_without_auth is not None:
-                    proxy_handler = urllib.request.ProxyHandler(self.proxies_dict_without_auth)
+                    proxy_handler = urllib.ProxyHandler(self.proxies_dict_without_auth)
                     opener = urllib.build_opener(proxy_handler)
                 else:
                     opener = urllib.build_opener()
