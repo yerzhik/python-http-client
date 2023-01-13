@@ -72,7 +72,8 @@ class Client(object):
                  version=None,
                  url_path=None,
                  append_slash=False,
-                 timeout=None):
+                 timeout=None,
+                 proxies_without_auth_dict=None):
         """
         :param host: Base URL for the api. (e.g. https://api.sendgrid.com)
         :type host:  string
@@ -89,6 +90,7 @@ class Client(object):
         """
         self.host = host
         self.request_headers = request_headers or {}
+        self.proxies_dict_without_auth = proxies_without_auth_dict
         self._version = version
         # _url_path keeps track of the dynamically built url
         self._url_path = url_path or []
@@ -250,7 +252,11 @@ class Client(object):
                             'Content-Type', 'application/json')
                         data = json.dumps(request_body).encode('utf-8')
 
-                opener = urllib.build_opener()
+                if self.proxies_dict_without_auth is not None:
+                    proxy_handler = urllib.request.ProxyHandler(self.proxies_dict_without_auth)
+                    opener = urllib.build_opener(proxy_handler)
+                else:
+                    opener = urllib.build_opener()
                 request = urllib.Request(
                     self._build_url(query_params),
                     headers=self.request_headers,
