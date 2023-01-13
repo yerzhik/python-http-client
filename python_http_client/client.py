@@ -254,6 +254,7 @@ class Client(object):
                         data = json.dumps(request_body).encode('utf-8')
 
                 if self.proxies_dict_without_auth is not None:
+                    urllib.proxy_bypass = lambda h: 0
                     proxy_handler = urllib.ProxyHandler(self.proxies_dict_without_auth)
                     opener = urllib.build_opener(proxy_handler)
                 else:
